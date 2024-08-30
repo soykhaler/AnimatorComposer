@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animator Composer</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #282c34;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 300px;
+            height: 100px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        canvas {
+            background-color: #1e1e1e;
+            width: 500px;
+            height: 300px;
+            border: 2px solid #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <textarea id="inputText" placeholder="Escribe tu texto aquí..."></textarea>
+        <button id="generateButton">Generar Motion Graphics</button>
+        <canvas id="canvas"></canvas>
+    </div>
+    <script>
+        document.getElementById('generateButton').addEventListener('click', generateMotionGraphics);
+
+        function generateMotionGraphics() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const text = document.getElementById('inputText').value;
+            const lines = text.split('\n'); // Dividir el texto en líneas separadas por saltos de línea
+
+            // Limpiar el lienzo completamente
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Estilo de texto
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = 'white';
+
+            let lineIndex = 0;
+            const fps = 60; // Frames por segundo
+            const speed = 2; // Reducir la velocidad de animación (pixeles por frame)
+
+            function animateLine() {
+                if (lineIndex < lines.length) {
+                    const line = lines[lineIndex];
+                    const startX = canvas.width / 2;
+                    const startY = -50; // Fuera de la pantalla
+                    const endY = canvas.height / 2; // Centrado verticalmente
+
+                    let yPos = startY;
+
+                    function drawFrame() {
+                        // Limpiar el lienzo antes de dibujar la nueva posición
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                        // Dibujar la línea actual
+                        ctx.fillText(line, startX, yPos);
+                        yPos += speed; // Velocidad más lenta
+
+                        if (yPos < endY) {
+                            requestAnimationFrame(drawFrame); // Solicitar el siguiente frame
+                        } else {
+                            yPos = endY;
+                            ctx.fillText(line, startX, yPos); // Dibujar la línea en su posición final
+                            lineIndex++;
+                            setTimeout(animateLine, 500); // Esperar antes de animar la siguiente línea
+                        }
+                    }
+
+                    requestAnimationFrame(drawFrame);
+                }
+            }
+
+            animateLine();
+        }
+    </script>
+</body>
+</html>
