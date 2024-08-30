@@ -49,6 +49,7 @@
             background-color: #555;
         }
 
+        /* Mantén el tamaño del canvas en 500x300 usando CSS */
         canvas {
             background-color: #1e1e1e;
             width: 500px;
@@ -61,7 +62,7 @@
 <body>
     <div class="container">
         <textarea id="inputText" placeholder="Escribe tu texto aquí..."></textarea>
-        <button id="generateButton">Generar Motion Graphics</button>
+        <button id="generateButton">Generar Animación</button>
         <canvas id="canvas"></canvas>
     </div>
     <script>
@@ -70,6 +71,19 @@
         function generateMotionGraphics() {
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
+
+            // Ajusta el tamaño de dibujo del canvas para mayor resolución
+            const scaleFactor = 2;
+            canvas.width = 500 * scaleFactor;
+            canvas.height = 300 * scaleFactor;
+
+            // Ajusta el tamaño CSS del canvas para que siga siendo de 500x300
+            canvas.style.width = '500px';
+            canvas.style.height = '300px';
+
+            // Escalar el contexto de dibujo para que todo se dibuje en alta resolución
+            ctx.scale(scaleFactor, scaleFactor);
+
             const text = document.getElementById('inputText').value;
             const lines = text.split('\n'); // Dividir el texto en líneas separadas por saltos de línea
 
@@ -77,21 +91,20 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Estilo de texto
-            ctx.font = '24px Arial, sans-serif';
+            ctx.font = '55px Arial, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = 'white';
 
             let lineIndex = 0;
-            const fps = 60; // Frames por segundo
             const speed = 1; // Reducir la velocidad de animación (pixeles por frame)
 
             function animateLine() {
                 if (lineIndex < lines.length) {
                     const line = lines[lineIndex];
-                    const startX = canvas.width / 2;
+                    const startX = canvas.width / (2 * scaleFactor);
                     const startY = -50; // Fuera de la pantalla
-                    const endY = canvas.height / 2; // Centrado verticalmente
+                    const endY = canvas.height / (2 * scaleFactor); // Centrado verticalmente
 
                     let yPos = startY;
 
