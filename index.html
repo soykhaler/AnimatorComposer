@@ -28,6 +28,25 @@
             margin-bottom: 20px;
             font-size: 16px;
             padding: 10px;
+            color: #ffffff;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #444;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background-color: #555;
         }
 
         canvas {
@@ -35,6 +54,7 @@
             width: 500px;
             height: 300px;
             border: 2px solid #444;
+            border-radius: 8px;
         }
     </style>
 </head>
@@ -57,14 +77,14 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Estilo de texto
-            ctx.font = '24px Arial';
+            ctx.font = '24px Arial, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = 'white';
 
             let lineIndex = 0;
             const fps = 60; // Frames por segundo
-            const speed = 2; // Reducir la velocidad de animación (pixeles por frame)
+            const speed = 1; // Reducir la velocidad de animación (pixeles por frame)
 
             function animateLine() {
                 if (lineIndex < lines.length) {
