@@ -105,7 +105,7 @@
             // Crear una instancia de GIF.js
             const gif = new GIF({
                 workers: 2,
-                quality: 10,
+                quality: 20,  // Aumenta el número para reducir la calidad y el tamaño del GIF
                 width: canvas.width,
                 height: canvas.height
                 // No necesitas especificar workerScript aquí
@@ -146,11 +146,22 @@
                 } else {
                     // Una vez que la animación está completa, renderizar el GIF
                     gif.on('finished', function(blob) {
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'animacion.gif';
-                        a.click();
+                        console.log('GIF terminado:', blob);  // Verifica que el GIF se genera
+                        if (blob.size > 0) {
+                            console.log('Tamaño del GIF:', blob.size, 'bytes');
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'animacion.gif';
+                            document.body.appendChild(a);  // Asegúrate de que el elemento <a> esté en el DOM
+                            setTimeout(() => {
+                                a.click();
+                                window.URL.revokeObjectURL(url);  // Limpia la URL
+                                console.log('Descarga iniciada');
+                            }, 100);  // Añadir un pequeño retraso
+                        } else {
+                            console.error('El GIF generado está vacío.');
+                        }
                     });
 
                     gif.render();
