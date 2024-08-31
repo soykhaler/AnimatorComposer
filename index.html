@@ -65,6 +65,9 @@
         <button id="generateButton">Generar Animación</button>
         <canvas id="canvas"></canvas>
     </div>
+    <!-- Incluye gif.js desde el CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
+
     <script>
         document.getElementById('generateButton').addEventListener('click', generateMotionGraphics);
 
@@ -99,6 +102,15 @@
             let lineIndex = 0;
             const speed = 1; // Reducir la velocidad de animación (pixeles por frame)
 
+            // Crear una instancia de GIF.js
+            const gif = new GIF({
+                workers: 2,
+                quality: 10,
+                width: canvas.width,
+                height: canvas.height
+                // No necesitas especificar workerScript aquí
+            });
+
             function animateLine() {
                 if (lineIndex < lines.length) {
                     const line = lines[lineIndex];
@@ -116,17 +128,32 @@
                         ctx.fillText(line, startX, yPos);
                         yPos += speed; // Velocidad más lenta
 
+                        // Añadir frame al GIF
+                        gif.addFrame(ctx, { copy: true, delay: 100 });
+
                         if (yPos < endY) {
                             requestAnimationFrame(drawFrame); // Solicitar el siguiente frame
                         } else {
                             yPos = endY;
                             ctx.fillText(line, startX, yPos); // Dibujar la línea en su posición final
+                            gif.addFrame(ctx, { copy: true, delay: 1000 }); // Añadir un frame más largo al final
                             lineIndex++;
                             setTimeout(animateLine, 500); // Esperar antes de animar la siguiente línea
                         }
                     }
 
                     requestAnimationFrame(drawFrame);
+                } else {
+                    // Una vez que la animación está completa, renderizar el GIF
+                    gif.on('finished', function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'animacion.gif';
+                        a.click();
+                    });
+
+                    gif.render();
                 }
             }
 
